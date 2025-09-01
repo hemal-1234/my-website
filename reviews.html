@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sweet Crumbs Bakery | Reviews</title>
+    <meta name="description" content="Read and leave reviews for Sweet Crumbs Bakery.">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://kit.fontawesome.com/68954c7dd7.js" crossorigin="anonymous"></script>
+</head>
+<body>
+    <header>
+        <h1>Sweet Crumbs Bakery</h1>
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="about.html">About Us</a>
+            <a href="products.html">Products</a>
+            <a href="contact.html">Contact</a>
+            <a href="reviews.html">Reviews</a>
+        </nav>
+    </header>
+
+    <div class="container">
+        <section class="reviews-section">
+            <h2>Customer Reviews</h2>
+            <img src="https://i.pinimg.com/736x/2a/a2/16/2aa2164ca2a22d8b886cb10a99583188.jpg" alt="Happy Customer" class="banner-img">
+            <div class="review-list" id="reviews-list">
+                <!-- Reviews will appear here -->
+            </div>
+            <form class="feedback-form" id="feedbackForm">
+                <h3>Leave a Review</h3>
+                <input type="text" id="reviewer" placeholder="Your Name" required>
+                <textarea id="reviewText" rows="4" placeholder="Your feedback" required></textarea>
+                <button type="submit">Submit Review</button>
+            </form>
+        </section>
+    </div>
+
+    <footer>
+        &copy; 2025 Sweet Crumbs Bakery. All rights reserved.
+    </footer>
+    <script>
+        // Review storage using localStorage
+        const reviewForm = document.getElementById('feedbackForm');
+        const reviewsList = document.getElementById('reviews-list');
+
+        function getReviews() {
+            return JSON.parse(localStorage.getItem('bakeryReviews') || "[]");
+        }
+        function saveReviews(reviews) {
+            localStorage.setItem('bakeryReviews', JSON.stringify(reviews));
+        }
+        function renderReviews() {
+            const reviews = getReviews();
+            if (reviews.length === 0) {
+                reviewsList.innerHTML = "<p style='text-align:center;color:#aaa;'>No reviews yet. Be the first to share your experience!</p>";
+                return;
+            }
+            reviewsList.innerHTML = reviews.map(r => `
+                <div class="review">
+                    <strong>${r.name}</strong><br>
+                    <span>${r.text}</span>
+                </div>
+            `).join('');
+        }
+
+        reviewForm.onsubmit = function(e) {
+            e.preventDefault();
+            const name = document.getElementById('reviewer').value.trim();
+            const text = document.getElementById('reviewText').value.trim();
+            if (!name || !text) return;
+            const reviews = getReviews();
+            reviews.unshift({name, text});
+            saveReviews(reviews);
+            renderReviews();
+            reviewForm.reset();
+        };
+
+        // Load reviews on page load
+        renderReviews();
+    </script>
+</body>
+</html>
